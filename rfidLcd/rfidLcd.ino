@@ -7,6 +7,7 @@
  
 #define SS_PIN 10
 #define RST_PIN 9
+double valor_parcial=0;
 MFRC522 mfrc522(SS_PIN, RST_PIN);   // Create MFRC522 instance.
  
 LiquidCrystal lcd(6, 7, 5, 4, 3, 2); 
@@ -49,34 +50,109 @@ void loop()
      conteudo.concat(String(mfrc522.uid.uidByte[i], HEX));
   }
   Serial.println();
-  Serial.print("Mensagem : ");
+  Serial.print("Produto: ");
   conteudo.toUpperCase();
   if (conteudo.substring(1) == "D5 95 56 A3") //UID 1 - Chaveiro
   {
-    Serial.println("Ola JOSHUA !");
+    valor_parcial += 8.47;
+    Serial.println("Leite -> R$8,47");
     Serial.println();
     lcd.clear();
     lcd.setCursor(0,0);
-    lcd.print("Ola JOSHUA !");
+    lcd.print("Produto:");
     lcd.setCursor(0,1);
-    lcd.print("Acesso liberado!");
+    lcd.print("Leite R$8,47");
+    lcd.setCursor(0,1);
     delay(3000);
     mensageminicial();
   }
-  if (conteudo.substring(1) == "98 90 90 B9") //UID 1 - Chaveiro
+  if (conteudo.substring(1) == "98 90 90 B9") //UID 2 - Chaveiro
   {
-    Serial.println("Ola RODRIGO !");
+   valor_parcial += 2.34;
+    Serial.println("Arroz -> R$2,34");
     Serial.println();
     lcd.clear();
     lcd.setCursor(0,0);
-    lcd.print("Ola RODRIGO !");
+    lcd.print("Produto:");
     lcd.setCursor(0,1);
-    lcd.print("Acesso liberado!");
+    lcd.print("Arroz R$2,34");
+    lcd.setCursor(0,1);
     delay(3000);
     mensageminicial();
   }
+  if (conteudo.substring(1) == "56 C0 B7 73") //UID 3 - Chaveiro
+  {
+    valor_parcial += 4.10;
+    Serial.println("Macarrao -> R$4,10");
+    Serial.println();
+    lcd.clear();
+    lcd.setCursor(0,0);
+    lcd.print("Produto:");
+    lcd.setCursor(0,1);
+    lcd.print("Macarrao R$4,10");
+    lcd.setCursor(0,1);
+    delay(3000);
+    mensageminicial();
+  }
+  if (conteudo.substring(1) == "FA 8B 17 A3") //UID 4 - Chaveiro
+  {
+    valor_parcial += 6.49;
+    Serial.println("Coca Cola 2L -> R$6,49");
+    Serial.println();
+    lcd.clear();
+    lcd.setCursor(0,0);
+    lcd.print("Produto:");
+    lcd.setCursor(0,1);
+    lcd.print("Coca Cola R$6,49");
+    lcd.setCursor(0,1);
+    delay(3000);
+    mensageminicial();
+  }
+  if (conteudo.substring(1) == "10 0D 95 79") //UID 5 - Chaveiro
+  {
+    valor_parcial += 4.59;
+    Serial.println("Toddy -> R$4,59");
+    Serial.println();
+    lcd.clear();
+    lcd.setCursor(0,0);
+    lcd.print("Produto:");
+    lcd.setCursor(0,1);
+    lcd.print("Toddy R$4,59");
+    lcd.setCursor(0,1);
+    delay(3000);
+    mensageminicial();
+  }
+  if (conteudo.substring(1) == "7D 6D 17 A3") //UID 6 - Chaveiro
+  {
+    valor_parcial += 14.98;
+    Serial.println("Pizza -> R$14,98");
+    Serial.println();
+    lcd.clear();
+    lcd.setCursor(0,0);
+    lcd.print("Produto:");
+    lcd.setCursor(0,1);
+    lcd.print("Pizza R$14,98");
+    lcd.setCursor(0,1);
+    delay(3000);
+    mensageminicial();
+  }
+  if (conteudo.substring(1) == "55 BC 06 88") //UID 7 - Chaveiro
+  {
+    valor_parcial += 10.99;
+    Serial.println("Melancia -> R$10,99");
+    Serial.println();
+    lcd.clear();
+    lcd.setCursor(0,0);
+    lcd.print("Produto:");
+    lcd.setCursor(0,1);
+    lcd.print("Melancia R$10,99");
+    lcd.setCursor(0,1);
+    delay(3000);
+    mensageminicial();
+  }
+  
  
-  if (conteudo.substring(1) == "C9 7D A7 89") //UID 2 - Cartao
+  if (conteudo.substring(1) == "C9 7D A7 89") // - Cartao
   {
     Serial.println("Ola DESCONHECIDO !");
     Serial.println();
@@ -93,7 +169,8 @@ void loop()
 void mensageminicial()
 {
   lcd.clear();
-  lcd.print(" Aproxime o seu");  
+  lcd.print("Valor da Compra:");  
   lcd.setCursor(0,1);
-  lcd.print("cartao do leitor");  
+  lcd.print("R$"); 
+  lcd.print(valor_parcial);  
 }
