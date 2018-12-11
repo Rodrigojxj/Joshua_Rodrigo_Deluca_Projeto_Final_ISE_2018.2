@@ -20,8 +20,8 @@ void setup()
   Serial.println("Aproxime o seu cartao do leitor...");
   Serial.println();
   //Define o número de colunas e linhas do LCD:  
-  lcd.begin(16, 2);  
-  mensageminicial();
+  lcd.begin(16, 2); 
+  mensagemIdle(); 
 }
  
 void loop() 
@@ -150,34 +150,41 @@ if (enable)
     lcd.setCursor(0,1);
     delay(3000);
     mensageminicial();
-  } 
+  }
+}
+ 
   if (conteudo.substring(1) == "C9 7D A7 89") // - Cartao
   {
-    enable=0;
-    Serial.println("Compra Finalizada");
-    Serial.println();
-    lcd.clear();
-    lcd.setCursor(0,0);
-    lcd.print("Compra Finalizada");
-    lcd.setCursor(0,1);
-    lcd.print("Total:R$");
-    lcd.print(valor_parcial);
-    delay(3000);
-    mensageminicial();
+    if (enable == 1)
+    {
+      enable=0;
+      Serial.println("Compra Finalizada");
+      Serial.println();
+      lcd.clear();
+      lcd.setCursor(0,0);
+      lcd.print("Compra Finalizada");
+      lcd.setCursor(0,1);
+      lcd.print("Total:R$");
+      lcd.print(valor_parcial);
+      delay(3000);
+      valor_parcial = 0.00;
+      mensagemIdle();
+    }else
+    {
+      enable=1;
+      Serial.println("Iniciaram as compras");
+      Serial.println();
+      lcd.clear();
+      lcd.setCursor(0,0);
+      lcd.print("Seja Bem Vindo");
+      lcd.setCursor(0,1);
+      lcd.print("Boas Compras");
+      delay(3000);
+      mensageminicial();
+    }
+    
   }
-  }
-  if (conteudo.substring(1) == "C9 7D A7 89") // - Cartao
-  {
-    enable=1;
-    Serial.println("Iniciaram as compras");
-    Serial.println();
-    lcd.clear();
-    lcd.setCursor(0,0);
-    lcd.print("Seja Bem Vindo");
-    lcd.setCursor(0,1);
-    lcd.print("Boas Compras");
-    delay(3000);
-  }
+
 }
 void mensageminicial()
 {
@@ -186,4 +193,12 @@ void mensageminicial()
   lcd.setCursor(0,1);
   lcd.print("R$"); 
   lcd.print(valor_parcial);  
+}
+
+void mensagemIdle()
+{
+  lcd.clear();
+  lcd.print("----------------");  
+  lcd.setCursor(0,1);
+  lcd.print("----------------"); 
 }
