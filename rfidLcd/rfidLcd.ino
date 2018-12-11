@@ -1,6 +1,3 @@
-//Programa : RFID - Controle de Acesso leitor RFID
-//Autor : FILIPEFLOP
- 
 #include <SPI.h>
 #include <MFRC522.h>
 #include <LiquidCrystal.h>
@@ -8,6 +5,7 @@
 #define SS_PIN 10
 #define RST_PIN 9
 double valor_parcial=0;
+int enable=0;
 MFRC522 mfrc522(SS_PIN, RST_PIN);   // Create MFRC522 instance.
  
 LiquidCrystal lcd(6, 7, 5, 4, 3, 2); 
@@ -52,6 +50,9 @@ void loop()
   Serial.println();
   Serial.print("Produto: ");
   conteudo.toUpperCase();
+
+if (enable)
+{
   if (conteudo.substring(1) == "D5 95 56 A3") //UID 1 - Chaveiro
   {
     valor_parcial += 8.47;
@@ -149,23 +150,35 @@ void loop()
     lcd.setCursor(0,1);
     delay(3000);
     mensageminicial();
-  }
-  
- 
+  } 
   if (conteudo.substring(1) == "C9 7D A7 89") // - Cartao
   {
-    Serial.println("Ola DESCONHECIDO !");
+    enable=0;
+    Serial.println("Compra Finalizada");
     Serial.println();
     lcd.clear();
     lcd.setCursor(0,0);
-    lcd.print("Ola DESCONHECIDO !");
+    lcd.print("Compra Finalizada");
     lcd.setCursor(0,1);
-    lcd.print("Acesso Negado !");
+    lcd.print("Total:R$");
+    lcd.print(valor_parcial);
     delay(3000);
     mensageminicial();
   }
-} 
- 
+  }
+  if (conteudo.substring(1) == "C9 7D A7 89") // - Cartao
+  {
+    enable=1;
+    Serial.println("Iniciaram as compras");
+    Serial.println();
+    lcd.clear();
+    lcd.setCursor(0,0);
+    lcd.print("Seja Bem Vindo");
+    lcd.setCursor(0,1);
+    lcd.print("Boas Compras");
+    delay(3000);
+  }
+}
 void mensageminicial()
 {
   lcd.clear();
