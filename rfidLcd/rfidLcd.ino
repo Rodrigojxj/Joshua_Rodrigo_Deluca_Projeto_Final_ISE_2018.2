@@ -4,6 +4,7 @@
  
 #define SS_PIN 10
 #define RST_PIN 9
+#define AL_PIN 8
 double valor_parcial=0;
 int enable=0;
 MFRC522 mfrc522(SS_PIN, RST_PIN);   // Create MFRC522 instance.
@@ -14,6 +15,7 @@ char st[20];
  
 void setup() 
 {
+  pinMode(AL_PIN, OUTPUT);
   Serial.begin(9600);   // Inicia a serial
   SPI.begin();      // Inicia  SPI bus
   mfrc522.PCD_Init();   // Inicia MFRC522
@@ -151,41 +153,51 @@ if (enable)
     delay(3000);
     mensageminicial();
   }
-}
- 
+
   if (conteudo.substring(1) == "C9 7D A7 89") // - Cartao
   {
-    if (enable == 1)
-    {
-      enable=0;
-      Serial.println("Compra Finalizada");
-      Serial.println();
-      lcd.clear();
-      lcd.setCursor(0,0);
-      lcd.print("Compra Finalizada");
-      lcd.setCursor(0,1);
-      lcd.print("Total:R$");
-      lcd.print(valor_parcial);
-      delay(3000);
-      valor_parcial = 0.00;
-      mensagemIdle();
-    }else
-    {
-      enable=1;
-      Serial.println("Iniciaram as compras");
-      Serial.println();
-      lcd.clear();
-      lcd.setCursor(0,0);
-      lcd.print("Seja Bem Vindo");
-      lcd.setCursor(0,1);
-      lcd.print("Boas Compras");
-      delay(3000);
-      mensageminicial();
-    }
-    
+    digitalWrite(AL_PIN, LOW);
+    enable=0;
+    Serial.println("Compra Finalizada");
+    Serial.println();
+    lcd.clear();
+    lcd.setCursor(0,0);
+    lcd.print("Compra Finalizada");
+    lcd.setCursor(0,1);
+    lcd.print("Total:R$");
+    lcd.print(valor_parcial);
+    delay(3000);
+    valor_parcial = 0.00;
+    mensagemIdle();
   }
+}else
+{
+  if (conteudo.substring(1) == "C9 7D A7 89") // - Cartao
+  {
+    digitalWrite(AL_PIN, LOW);
+    enable=1;
+    Serial.println("Iniciaram as compras");
+    Serial.println();
+    lcd.clear();
+    lcd.setCursor(0,0);
+    lcd.print("Seja Bem Vindo");
+    lcd.setCursor(0,1);
+    lcd.print("Boas Compras");
+    delay(3000);
+    mensageminicial();
+  }else
+  {
+    lcd.clear();
+    lcd.setCursor(0,0);
+    lcd.print("AVISO!!");
+    lcd.setCursor(0,1);
+    lcd.print("LEITOR DESATIVADO!");
+    digitalWrite(AL_PIN, HIGH);
+  }
+}
 
 }
+
 void mensageminicial()
 {
   lcd.clear();
