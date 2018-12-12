@@ -5,8 +5,10 @@
 #define SS_PIN 10
 #define RST_PIN 9
 #define AL_PIN 8
-double valor_parcial=0;
+double valor_parcial = 0;
+double valor_total = 0;
 int enable=0;
+int car01 = 0;
 MFRC522 mfrc522(SS_PIN, RST_PIN);   // Create MFRC522 instance.
  
 LiquidCrystal lcd(6, 7, 5, 4, 3, 2); 
@@ -167,6 +169,7 @@ if (enable)
     lcd.print("Total:R$");
     lcd.print(valor_parcial);
     delay(3000);
+    valor_total += valor_parcial;
     valor_parcial = 0.00;
     mensagemIdle();
   }
@@ -185,14 +188,71 @@ if (enable)
     lcd.print("Boas Compras");
     delay(3000);
     mensageminicial();
+  }else if (conteudo.substring(1) == "45 D4 D4 35") // - Cartao de ID do carrinho
+  {
+    if(car01 == 0)
+    {
+      car01 = 1;
+      Serial.println("Carrinho 01 ativado");
+      delay(1000);
+    }else
+    {
+      Serial.println();
+      Serial.print("Carrinho 01: Valor: R$ ");
+      Serial.println(valor_total);
+      Serial.println("Forma de pagamento:");
+      Serial.println("Dinheiro        Cartão");
+      Serial.println();
+      delay(1000);
+      valor_total = 0;
+      car01 = 0;
+    }
   }else
   {
+    Serial.println("AVISO!!");
+    Serial.println("LEITOR DESATIVADO!");
     lcd.clear();
     lcd.setCursor(0,0);
     lcd.print("AVISO!!");
     lcd.setCursor(0,1);
     lcd.print("LEITOR DESATIVADO!");
     digitalWrite(AL_PIN, HIGH);
+
+    if (conteudo.substring(1) == "D5 95 56 A3") //UID 1 - Chaveiro
+    {
+      valor_parcial += 8.47;
+      delay(1000);
+    }
+    if (conteudo.substring(1) == "98 90 90 B9") //UID 2 - Chaveiro
+    {
+     valor_parcial += 2.34;
+     delay(1000);
+    }
+    if (conteudo.substring(1) == "56 C0 B7 73") //UID 3 - Chaveiro
+    {
+      valor_parcial += 4.10;
+      delay(1000);
+    }
+    if (conteudo.substring(1) == "FA 8B 17 A3") //UID 4 - Chaveiro
+    {
+      valor_parcial += 6.49;
+      delay(1000);
+    }
+    if (conteudo.substring(1) == "10 0D 95 79") //UID 5 - Chaveiro
+    {
+      valor_parcial += 4.59;
+      delay(1000);
+    }
+    if (conteudo.substring(1) == "7D 6D 17 A3") //UID 6 - Chaveiro
+    {
+      valor_parcial += 14.98;
+      delay(1000);
+    }
+    if (conteudo.substring(1) == "55 BC 06 88") //UID 7 - Chaveiro
+    {
+      valor_parcial += 10.99;
+      delay(1000);
+    }
   }
 }
 
